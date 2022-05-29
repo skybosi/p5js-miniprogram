@@ -1,14 +1,15 @@
 var DOMParser = require("./xmldom").DOMParser;
-import performance from "./performance"
-import { screen } from "./WindowProperties";
-import location from "./location";
-const events = {}
-export default {
+var performance = require('./performance').performance
+var WindowProperties = require('./WindowProperties')
+var location = require('./location').location
+var navigator = require('./navigator').navigator
+var events = {}
+
+var window = {
     AudioContext: function () { },
     URL: {},
-    navigator: { userAgent: '' },
+    navigator: navigator,
     performance: performance,
-    screen: screen,
     location: location,
     ontouchstart: true,
     DOMParser: DOMParser,
@@ -41,3 +42,6 @@ export default {
         }
     }
 }
+Object.assign(window, WindowProperties);
+module.exports = window
+

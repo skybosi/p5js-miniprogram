@@ -1,4 +1,4 @@
-import EventTarget from './EventTarget.js'
+var EventTarget = require('./EventTarget').EventTarget
 
 const _requestHeader = new WeakMap()
 const _responseHeader = new WeakMap()
@@ -23,8 +23,7 @@ function _changeReadyState(readyState, event = {}) {
 function _isRelativePath(url) {
     return !(/^(http|https|ftp|wxfile):\/\/.*/i.test(url));
 }
-
-export default class XMLHttpRequest extends EventTarget {
+class XMLHttpRequest extends EventTarget {
 
     constructor() {
         super();
@@ -209,3 +208,5 @@ XMLHttpRequest.OPENED = 1
 XMLHttpRequest.HEADERS_RECEIVED = 2
 XMLHttpRequest.LOADING = 3
 XMLHttpRequest.DONE = 4
+
+exports.XMLHttpRequest = XMLHttpRequest

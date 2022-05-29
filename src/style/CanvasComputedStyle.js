@@ -15,4 +15,4 @@ function getCanvasComputedStyle(canvas) {
     return style;
 }
 
-export default getCanvasComputedStyle;
+exports.getCanvasComputedStyle = getCanvasComputedStyle

@@ -1,0 +1,5 @@
+<!--index.wxml-->
+<view class="container">
+  <canvas type="2d" id="defaultCanvas0" bindtouchstart="touchEvent" bindtouchmove="touchEvent" bindtouchend="touchEvent" bindtouchcancel="touchEvent" style="width: 100%;height:100%;"></canvas>
+  <!-- <canvas type="2d" id="canvas2d"></canvas> -->
+</view>

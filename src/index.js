@@ -1,67 +1,56 @@
 
-import { atob } from './Base64';
-import XMLHttpRequest from './XMLHttpRequest'
-import window from './window'
-var DOMParser = require("./xmldom").DOMParser;
-import TouchEvent from "./touchEvent"
-import performance from "./performance"
-import { screen } from './WindowProperties';
+var window = require('./window')
+var doc = require('./document').document
+var Mixin = require('./util/mixin.js')
+var screen = require('./WindowProperties').screen
+var atob = require('./Base64').atob
+var TouchEvent = require('./touchEvent').TouchEvent
+var HTMLElement = require('./HTMLElement').HTMLElement
+var HTMLVideoElement = require('./HTMLVideoElement').HTMLVideoElement
 
-export function createP5JS (canvas, stageWidth, canvas2d) {
-    let ratio = stageWidth / canvas.width;
-    let evtArr = {};
+module.exports.createP5JS = function (canvas) {
     canvas.style = { width: canvas.width + 'px', height: canvas.height + 'px' }
     canvas.parentElement = true;
     canvas.getBoundingClientRect = function () {
         return { left: 0, top: 0, right: canvas.width, bottom: canvas.height, width: canvas.width, height: canvas.height };
     };
+    console.log("window", window)
     canvas.addEventListener = function (eventName, eventFun) {
         window.addEventListener(eventName, eventFun);
     }
     canvas.removeEventListener = function (eventName, eventFun) {
         window.removeEventListener(eventName, eventFun);
     }
-    if (canvas2d) {
-        canvas2d.addEventListener = function () { }
-        canvas2d.removeEventListener = function () { }
-    }
-    window.performance = performance
+
     const requestAnimationFrame = canvas.requestAnimationFrame;
     const cancelAnimationFrame = canvas.cancelAnimationFrame;
     window.requestAnimationFrame = requestAnimationFrame;
     window.cancelAnimationFrame = cancelAnimationFrame;
-    const HTMLVideoElement = function () { };
-    const HTMLCanvasElement = function () { };
-    const HTMLImageElement = function () { };
-    const MouseEvent = function () { };
-    const navigator = {
-        userAgent: ""
-    };
-    const Image = function () {
-        let img = canvas.createImage();
-        img.crossOrigin = "";
-        return img;
-    }
-    const document = {
-        clientLeft: 0,
-        clientTop: 0,
-        body: {
-            clientLeft: 0,
-            clientTop: 0,
-        },
+    window.canvas = canvas;
+    window.screen = screen;
+    screen = screen;
+
+    // 构造doucument
+    var document = doc
+    console.log("document", document)
+    Object.assign(document, {
         createElement (tagName) {
             tagName = tagName.toLowerCase();
-
+            console.log('DEBUG: createElement(' + tagName + ')');
             switch (tagName) {
                 case "canvas":
-                    return canvas2d;
+                    return canvas;
                 case "img":
                 case "image":
-                    let img = canvas.createImage();
+                    var img = canvas.createImage();
                     img.crossOrigin = "";
                     return img;
+                case "video":
+                    return new HTMLVideoElement()
                 case "a":
                     return { href: "" }
+                default:
+                    return new HTMLElement(tagName)
             }
         },
         createElementNS (nameSpace, tagName) {
@@ -71,7 +60,6 @@ export function createP5JS (canvas, stageWidth, canvas2d) {
             // TODO: Do we need the TextNode Class ???
             return text;
         },
-
         getElementById (id) {
             if (id === window.canvas.id) {
                 return window.canvas
@@ -124,6 +112,38 @@ export function createP5JS (canvas, stageWidth, canvas2d) {
             }
             return []
         },
+        addEventListener (type, listener) {
+            if (!events[type]) {
+                events[type] = []
+            }
+            events[type].push(listener)
+        },
+        removeEventListener (type, listener) {
+            const listeners = events[type]
+
+            if (listeners && listeners.length > 0) {
+                for (let i = listeners.length; i--; i > 0) {
+                    if (listeners[i] === listener) {
+                        listeners.splice(i, 1)
+                        break
+                    }
+                }
+            }
+        },
+        dispatchEvent (event) {
+            const type = event.type;
+            const listeners = events[type]
+
+            if (listeners) {
+                for (let i = 0; i < listeners.length; i++) {
+                    listeners[i](event)
+                }
+            }
+
+            if (event.target && typeof event.target['on' + type] === 'function') {
+                event.target['on' + type](event)
+            }
+        },
         //#### for p5js
         /**
          * Confirms if the window a p5.js program is in is "focused," meaning that
@@ -133,38 +153,24 @@ export function createP5JS (canvas, stageWidth, canvas2d) {
         hasFocus () {
             return true;
         }
-    };
+    });
     window.document = document;
     // eslint-disable-next-line
-    const atob = (a) => {
+    window.atob = (a) => {
         return atob(a)
     }
-    window.screen = screen;
-    __INJECT_P5JS__
-    p5js.dispatchEvent = function (event) {
-        const touchEvent = new TouchEvent(event.type)
-        for (var i = 0; i < event.touches.length; i++) {
-            event.touches[i].clientX = event.touches[i].x * ratio;
-            event.touches[i].clientY = event.touches[i].y * ratio;
-            event.touches[i].layerX = event.touches[i].x * ratio;
-            event.touches[i].layerY = event.touches[i].y * ratio;
-            event.touches[i].pageX = event.touches[i].x * ratio;
-            event.touches[i].pageY = event.touches[i].y * ratio;
-        }
-        for (var i = 0; i < event.changedTouches.length; i++) {
-            event.changedTouches[i].clientX = event.changedTouches[i].x * ratio;
-            event.changedTouches[i].clientY = event.changedTouches[i].y * ratio;
-            event.changedTouches[i].layerX = event.changedTouches[i].x * ratio;
-            event.changedTouches[i].layerY = event.changedTouches[i].y * ratio;
-            event.changedTouches[i].pageX = event.changedTouches[i].x * ratio;
-            event.changedTouches[i].pageY = event.changedTouches[i].y * ratio;
-        }
-        touchEvent.target = canvas
-        touchEvent.touches = event.touches
-        touchEvent.targetTouches = Array.prototype.slice.call(event.touches)
-        touchEvent.changedTouches = event.changedTouches
-        touchEvent.timeStamp = event.timeStamp
-        window.dispatchEvent(touchEvent)
+    Mixin.parentNode(canvas, document);
+    Mixin.style(canvas);
+    Mixin.classList(canvas);
+    Mixin.clientRegion(canvas);
+    Mixin.offsetRegion(canvas);
+    Mixin.dataset(canvas);// add for p5js
+    // return p5js
+    console.log("DEBUG: load ok!")
+    return {
+        window,
+        screen,
+        document,
+        canvas
     }
-    return p5js
 }

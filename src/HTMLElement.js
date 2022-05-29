@@ -1,12 +1,11 @@
-const noop = require('./util/index.js')
-const Mixin = require('./util/mixin.js')
-const Element = require('./Element').default
+var Mixin = require('./util/mixin.js')
+var noop = require('./util/index.js').noop
+var Element = require('./Element').Element
 console.log("Mixin", Mixin)
 console.log("Element", Element)
 console.log("noop", noop)
 
-export default class HTMLElement extends Element {
-
+class HTMLElement extends Element {
     constructor(tagName = '', level) {
         super()
 
@@ -25,7 +24,7 @@ export default class HTMLElement extends Element {
 
         this.tagName = tagName.toUpperCase()
 
-        Mixin.parentNode(this, level);
+        Mixin.parentNode(this, null, level);
         Mixin.style(this);
         Mixin.classList(this);
         Mixin.clientRegion(this);
@@ -33,3 +32,5 @@ export default class HTMLElement extends Element {
         Mixin.scrollRegion(this);
     }
 }
+
+exports.HTMLElement = HTMLElement;

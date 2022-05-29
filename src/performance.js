@@ -21,4 +21,4 @@ if (wx.getPerformance) {
     }
 }
 
-export default performance
+exports.performance = performance;

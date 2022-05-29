@@ -10,4 +10,4 @@ const location = {
   },
 }
 
-export default location
+exports.location = location;

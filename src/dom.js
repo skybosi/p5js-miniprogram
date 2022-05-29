@@ -1249,8 +1249,6 @@ try{
 }catch(e){//ie8
 }
 
-//if(typeof require == 'function'){
-	exports.Node = Node;
-	exports.DOMImplementation = DOMImplementation;
-	exports.XMLSerializer = XMLSerializer;
-//}
+exports.Node = Node;
+exports.DOMImplementation = DOMImplementation;
+exports.XMLSerializer = XMLSerializer;

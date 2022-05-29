@@ -1,6 +1,5 @@
-import EventTarget from './EventTarget.js'
-
-export default class Node extends EventTarget {
+var EventTarget = require('./EventTarget').EventTarget
+class Node extends EventTarget {
     constructor() {
         super()
         this.childNodes = []
@@ -31,3 +30,5 @@ export default class Node extends EventTarget {
         return null
     }
 }
+
+exports.Node = Node;

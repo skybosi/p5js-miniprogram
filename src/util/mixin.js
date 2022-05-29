@@ -1,20 +1,21 @@
 var innerWidth = require("../WindowProperties").innerWidth;
 var innerHeight = require("../WindowProperties").innerHeight;
-export function parentNode(obj, level) {
+
+exports.parentNode = function parentNode (obj, document, level) {
     if (!('parentNode' in obj)) {
         let _parent;
 
         if (level === 0) {
-            _parent = function() {
+            _parent = function () {
                 // return document
                 return null
             }
         } else if (level === 1) {
-            _parent = function() {
+            _parent = function () {
                 return document.documentElement
             }
         } else {
-            _parent = function() {
+            _parent = function () {
                 return document.body
             }
         }
@@ -29,15 +30,15 @@ export function parentNode(obj, level) {
         let _parent;
 
         if (level === 0) {
-            _parent = function() {
+            _parent = function () {
                 return null
             }
         } else if (level === 1) {
-            _parent = function() {
+            _parent = function () {
                 return document.documentElement
             }
         } else {
-            _parent = function() {
+            _parent = function () {
                 return document.body
             }
         }
@@ -49,7 +50,7 @@ export function parentNode(obj, level) {
     }
 }
 
-export function style(obj) {
+exports.style = function style (obj) {
     obj.style = obj.style || {}
 
     Object.assign(obj.style, {
@@ -62,7 +63,7 @@ export function style(obj) {
     })
 }
 
-export function clientRegion(obj) {
+exports.clientRegion = function clientRegion (obj) {
     if (!('clientLeft' in obj)) {
         obj.clientLeft = 0
         obj.clientTop = 0
@@ -73,7 +74,7 @@ export function clientRegion(obj) {
     }
 
     if (!('getBoundingClientRect' in obj)) {
-        obj.getBoundingClientRect = function() {
+        obj.getBoundingClientRect = function () {
             const ret = {
                 x: 0,
                 y: 0,
@@ -90,7 +91,7 @@ export function clientRegion(obj) {
     }
 }
 
-export function offsetRegion(obj) {
+exports.offsetRegion = function offsetRegion (obj) {
     if (!('offsetLeft' in obj)) {
         obj.offsetLeft = 0
         obj.offsetTop = 0
@@ -101,7 +102,7 @@ export function offsetRegion(obj) {
     }
 }
 
-export function scrollRegion(obj) {
+exports.scrollRegion = function scrollRegion (obj) {
     if (!('scrollLeft' in obj)) {
         obj.scrollLeft = 0
         obj.scrollTop = 0
@@ -112,11 +113,30 @@ export function scrollRegion(obj) {
     }
 }
 
-export function classList(obj) {
-    const noop = function() {}
+exports.classList = function classList (obj) {
+    const noop = function () { }
     obj.classList = []
     obj.classList.add = noop
     obj.classList.remove = noop
     obj.classList.contains = noop
     obj.classList.toggle = noop
+}
+
+// add for p5js
+exports.dataset = function dataset (obj) {
+    Object.defineProperty(obj, 'dataset', {
+        hidden: true,
+        writable: true
+    });
+    obj.dataset = obj.dataset || {}
+    Object.assign(obj.dataset, {
+        hidden: true
+    })
+}
+
+exports.canvas = function canvas (obj) {
+    Object.defineProperty(obj, 'canvas', {
+        writable: true
+    });
+    obj.canvas = obj.canvas || {}
 }

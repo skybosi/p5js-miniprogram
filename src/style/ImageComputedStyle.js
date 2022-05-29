@@ -16,4 +16,4 @@ function getImageComputedStyle(image) {
     return style;
 }
 
-export default getImageComputedStyle;
+exports.getImageComputedStyle = getImageComputedStyle;

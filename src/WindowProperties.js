@@ -1,9 +1,8 @@
 const { screenWidth, screenHeight, devicePixelRatio } = wx.getSystemInfoSync()
 
-export const innerWidth = screenWidth
-export const innerHeight = screenHeight
-export { devicePixelRatio }
-export const screen = {
+const innerWidth = screenWidth
+const innerHeight = screenHeight
+const screen = {
     width: screenWidth,
     height: screenHeight,
     availWidth: innerWidth,
@@ -11,10 +10,12 @@ export const screen = {
     availLeft: 0,
     availTop: 0,
 }
-export const scrollX = 0
-export const scrollY = 0
-export const ontouchstart = null
-export const ontouchmove = null
-export const ontouchend = null
 
-export { default as performance } from './performance'
+module.exports = {
+    innerWidth,
+    innerHeight,
+    screenWidth,
+    screenHeight,
+    devicePixelRatio,
+    screen,
+}

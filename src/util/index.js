@@ -1,1 +1,3 @@
-export function noop() {}
+function noop() {}
+
+exports.noop = noop

@@ -56,4 +56,5 @@ function atob(input) {
     return output;
 }
 
-export { btoa, atob }
+exports.btoa = btoa;
+exports.atob = atob;

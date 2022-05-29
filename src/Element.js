@@ -1,7 +1,6 @@
-const Node = require('./Node').default
+var Node = require('./Node').Node
 console.log("Node", Node)
-export default class Element extends Node {
-
+class Element extends Node {
     constructor() {
         super()
 
@@ -25,3 +24,5 @@ export default class Element extends Node {
         return this[name]
     }
 }
+
+exports.Element = Element;

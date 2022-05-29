@@ -1,4 +1,4 @@
-const style = {
+exports.style = {
     "0": "animation-delay",
     "1": "animation-direction",
     "2": "animation-duration",
@@ -588,5 +588,3 @@ const style = {
     "zIndex": "auto",
     "zoom": "1"
 };
-
-export default style;

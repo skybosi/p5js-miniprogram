@@ -1,4 +1,4 @@
-export default class TouchEvent {
+class TouchEvent {
   target = ""
   currentTarget = ""
   touches = []
@@ -10,3 +10,5 @@ export default class TouchEvent {
     this.type = type
   }
 }
+
+module.exports.TouchEvent = TouchEvent;
